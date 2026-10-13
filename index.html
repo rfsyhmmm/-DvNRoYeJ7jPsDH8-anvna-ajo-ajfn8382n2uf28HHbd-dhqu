@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dashboard KPI – PT Epiroc Southern Asia Site Sumbawa</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f6f5f1;--card:#fff;--tx:#1d1d1b;--mu:#6b6a64;--bd:#e2e0d8;--ac:#0b5cad;--acs:#e6f0fa;
+--c1:#b7791f;--c2:#0b7a5a;--c3:#0b5cad;--c4:#7a3fa0;--ok:#0b7a5a;--bad:#b3261e}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#141413;--card:#1f1f1d;--tx:#efeee8;--mu:#a3a198;--bd:#34332f;--ac:#6aa9ec;--acs:#1c2a3a;--c1:#e0a94a;--c2:#4cc29c;--c3:#6aa9ec;--c4:#c298e0;--ok:#4cc29c;--bad:#f2837b}}
+:root[data-theme="dark"]{--bg:#141413;--card:#1f1f1d;--tx:#efeee8;--mu:#a3a198;--bd:#34332f;--ac:#6aa9ec;--acs:#1c2a3a;--c1:#e0a94a;--c2:#4cc29c;--c3:#6aa9ec;--c4:#c298e0;--ok:#4cc29c;--bad:#f2837b}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:15px/1.55 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.w{max-width:1100px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:22px;margin:0 0 4px}h2{font-size:16px;margin:28px 0 10px}
+.sub{color:var(--mu);font-size:13px}
+.persp{display:flex;align-items:center;gap:8px;margin:20px 0 8px;font-weight:600;font-size:14px}
+.persp i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.persp span{color:var(--mu);font-weight:400}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.k{background:var(--card);border:1px solid var(--bd);border-left:4px solid var(--p);border-radius:10px;padding:12px;cursor:pointer;text-align:left;font:inherit;color:inherit}
+.k:hover,.k.on{border-color:var(--p);background:var(--acs)}
+.k b{display:block;font-size:14px}.k .t{font-size:12px;color:var(--mu);margin-top:4px}
+.k .bw{float:right;font-size:12px;font-weight:700;color:var(--p)}
+.bar{display:flex;height:26px;border-radius:8px;overflow:hidden;font-size:11px;color:#fff;margin-top:6px}
+.bar div{display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden}
+#det{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px;margin-top:20px}
+#det h3{margin:0 0 2px;font-size:18px}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin:12px 0;border-bottom:1px solid var(--bd);padding-bottom:8px}
+.tabs button{border:1px solid var(--bd);background:transparent;color:var(--tx);border-radius:16px;padding:5px 12px;font:inherit;font-size:13px;cursor:pointer;white-space:nowrap}
+.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.tb{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+td,th{border-bottom:1px solid var(--bd);padding:7px 8px;text-align:left;vertical-align:top}
+th{color:var(--mu);font-weight:600;font-size:12px}
+td:first-child{font-weight:600;white-space:nowrap}
+.f{background:var(--acs);border-radius:8px;padding:10px 12px;font-family:ui-monospace,Menlo,monospace;font-size:14px;margin:8px 0;overflow-x:auto}
+.pill{display:inline-block;padding:2px 9px;border-radius:12px;font-size:12px;font-weight:600;background:var(--acs);color:var(--ac)}
+.note{font-size:13px;color:var(--mu);margin:8px 0}
+.calc{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:16px}
+.row{display:grid;grid-template-columns:minmax(120px,1.2fr) 2fr 60px 70px;gap:10px;align-items:center;padding:6px 0;border-bottom:1px solid var(--bd);font-size:13.5px}
+.row input{width:100%}
+.tot{font-size:30px;font-weight:700;margin:12px 0 0}
+.warn{color:var(--bad);font-size:13px;font-weight:600}
+@media(max-width:560px){.row{grid-template-columns:1fr 1fr;}.row input{grid-column:1/3}}
+</style>
+</head>
+<body>
+<div class="w">
+<h1>Dashboard KPI – Site Sumbawa</h1>
+<div class="sub">PT Epiroc Southern Asia · Business Balanced Scorecard · Objek: PV351 &amp; SmartROC D65 · Periode evaluasi Jan–Des 2026. Klik kartu KPI untuk melihat spesifikasi lengkap. Angka contoh adalah data simulasi kelompok, bukan data aktual perusahaan.</div>
+
+<h2>Komposisi bobot skor gabungan</h2>
+<div class="bar" id="bar"></div>
+
+<div id="cards"></div>
+
+<div id="det" hidden></div>
+
+<h2>Kalkulator skor kinerja gabungan</h2>
+<div class="calc">
+<div class="note">Geser skor pencapaian (0–100) tiap KPI. Bawaan = contoh Tabel 2.72 (hasil 88,50). Skor gabungan = Σ (bobot × skor).</div>
+<div id="rows"></div>
+<div class="tot"><span id="tot">0</span> <span class="sub">/ 100</span></div>
+<div class="warn" id="sw"></div>
+</div>
+<div class="note" style="margin-top:20px">Sumber: Proposal Tugas Akhir Kelompok 3, subbab 2.3. Bobot dan aturan penskoran merupakan ketentuan rancangan kelompok.</div>
+</div>
+
+<script>
+var P={keu:{n:"Keuangan",c:"var(--c1)",w:25},pel:{n:"Pelanggan",c:"var(--c2)",w:30},pin:{n:"Proses Bisnis Internal",c:"var(--c3)",w:30},pp:{n:"Pembelajaran & Pertumbuhan",c:"var(--c4)",w:15}};
+var K=[
+{id:"biaya",p:"keu",n:"Penghematan Biaya Pemeliharaan & Perbaikan",w:25,tg:"Biaya/jam turun ≥ 5% dari baseline",s0:100,
+def:"Persentase penurunan biaya pemeliharaan dan perbaikan per jam operasional terhadap baseline, dihitung terpisah untuk PV351 dan SmartROC D65. Penurunan akibat pekerjaan dihilangkan atau perbaikan ditunda tidak dihitung sebagai efisiensi.",
+tgt:[["Baseline PV351","Rp3.039.803,16 / jam operasional"],["Baseline D65","Rp1.734.200,40 / jam operasional"],["Target","Penurunan minimal 5%"],["Batas biaya PV351","Maks. Rp2.887.813,00 / jam"],["Batas biaya D65","Maks. Rp1.647.490,38 / jam"],["Periode","Dasar: 2025 · Evaluasi: 2026 · pencatatan bulanan, kumulatif sejak Januari"]],
+fm:[["B = Bs + Br + Bu + Bk + Bc + Bt","Total biaya periode (Rp)"],["C = B / H","Biaya per jam operasional; H = total jam operasional"],["E = (C0 − C1) / C0 × 100%","Persentase penurunan terhadap baseline"]],
+fn:"Hasil positif = biaya turun; nol = tetap; negatif = naik. Jika H = 0 atau C0 = 0 dicatat “tidak dapat dihitung”. Biaya per jam dihitung dari total kumulatif, bukan rata-rata sederhana bulanan.",
+bt:[["Servis","Jasa pemeriksaan teknis khusus, pengujian, kalibrasi"],["Komponen kecil & perbaikan umum","Penggantian komponen kecil dan perbaikan umum"],["Komponen utama","Penggantian unit komponen utama"],["Rantai berjalan","Tracks: rantai, sepatu, rol, roda penggerak"],["Cairan & gemuk","Pelumasan dan penggantian cairan (bukan BBM)"],["Tenaga kerja pemeliharaan","Teknisi internal"],["Di luar cakupan","Depresiasi, alat baru, energi, operator, administrasi, pelatihan, kehilangan produksi, pengiriman ditagihkan terpisah"]],
+sd:[["Pekerjaan","Work order"],["Biaya material","Bukti pengeluaran/pengembalian material"],["Jam operasional","Laporan operasi alat, divalidasi pelanggan"],["Hasil KPI","Lembar kerja Excel KPI keuangan"]],
+pj:[["Admin","Rekap biaya, hitung KPI, laporan bulanan"],["Pergudangan","Validasi jumlah & nilai material"],["Supervisor servis","Validasi biaya terhadap pekerjaan & unit"],["Maintenance Planner","Cek catatan, cocokkan jam operasional"],["Site Manager","Tinjau hasil, tindak lanjut"]],
+ex:"B = Rp2.887.813.000 ; H = 1.000 jam → C1 = Rp2.887.813,00 (PV351). E = (3.039.803,16 − 2.887.813,00) / 3.039.803,16 = 5,00% → Tercapai. D65 juga 5,00% (Rp1.647.490,38/jam).",
+sk:"S = min(100, E / 5% × 100); E ≤ 0 → 0. Contoh: 3% → 60; 5% → 100; 6% → 100. Skor KPI = rata-rata skor kedua alat."},
+{id:"pa",p:"pel",n:"Ketersediaan Alat (Physical Availability)",w:30,tg:"PA ≥ 88% per unit",s0:90,
+def:"Persentase waktu alat tersedia secara teknis terhadap total waktu. Alat siap tetapi menunggu lokasi (delay) atau belum ditugaskan (idle) tetap dihitung tersedia. PA bukan persentase waktu mengebor.",
+tgt:[["Baseline","88%"],["Target","Minimal 88% untuk setiap unit"],["Waktu tidak tersedia","Maksimal 12% dari total waktu"],["Periode","Bulanan, Jan–Des 2026; 24 jam/hari"]],
+fm:[["PA = (R + D + I) / T × 100%","R = ready, D = delay, I = idle, T = total waktu"]],
+fn:"Jumlah ready + delay + idle + tidak tersedia harus = T. Satu interval hanya satu kategori. Rekap tahunan = penjumlahan durasi, bukan rata-rata persentase bulanan. T = 0 → “tidak dapat dihitung”.",
+bt:[["Ready","Tersedia teknis dan menjalankan operasi"],["Delay","Tersedia, ditugaskan, tertunda hambatan operasional (akses, area kerja)"],["Idle","Tersedia, tanpa penugasan"],["Tidak tersedia","Rusak atau dihentikan untuk pemeliharaan/perbaikan"],["Objek","Setiap unit PV351 dan SmartROC D65 dalam daftar unit"]],
+sd:[["Status alat","Laporan dispatcher pelanggan"],["Pemeliharaan/perbaikan","Work order servis"],["Hasil","Lembar kerja Excel PA"]],
+pj:[["Dispatcher pelanggan","Laporan status & waktu tiap unit"],["Teknisi servis","Catat waktu henti & selesai"],["Supervisor servis","Validasi waktu tidak tersedia"],["Maintenance Planner","Cocokkan catatan, hitung PA"],["Site Manager","Tinjau, tindak lanjut bersama pelanggan"]],
+ex:"Satu bulan 30 hari, T = 720 jam. PV351: R 450 + D 100 + I 83,6 = 633,6 jam → PA = 633,6/720 = 88%. D65: 420 + 120 + 93,6 = 633,6 jam → 88%. Keduanya tercapai (tetap, tanpa peningkatan).",
+sk:"S = min(100, PA / 88% × 100). Contoh: PA 79,2% → 90; ≥ 88% → 100."},
+{id:"mtbf",p:"pin",n:"Keandalan Alat (MTBF)",w:8,tg:"MTBF ≥ 60 jam per unit",s0:80,
+def:"Rata-rata jam operasi alat untuk setiap kejadian kerusakan. Semakin tinggi semakin andal.",
+tgt:[["Baseline","60 jam"],["Target","Minimal 60 jam per unit"],["Tanpa kerusakan","Dilaporkan “tidak terjadi kerusakan” + jam operasi; tidak diberi nilai/skor otomatis"],["Periode","Bulanan, Jan–Des 2026"]],
+fm:[["MTBF = H / N","H = total jam operasional, N = jumlah kejadian kerusakan"]],
+fn:"Tahunan = total jam ÷ total kejadian, bukan rata-rata MTBF bulanan. Kerusakan dihitung pada bulan mulai terjadi.",
+bt:[["Dihitung","Gangguan teknis yang menghentikan fungsi pengeboran dan perlu perbaikan (sensor, komponen mekanis)"],["Satu kejadian","Satu penghentian alat, walau banyak komponen"],["Berulang","Kejadian baru bila alat sudah siap lalu berhenti lagi"],["Dikecualikan","Pemeliharaan terjadwal, penundaan lokasi, tanpa penugasan"],["Awal","Alat dihentikan karena gangguan"],["Akhir","Perbaikan & pengujian selesai, alat siap"]],
+sd:[["Jam operasional","Laporan operasi divalidasi pelanggan"],["Kerusakan","Laporan penghentian & catatan teknisi"],["Penanganan","Work order"],["Hasil","Excel MTBF"]],
+pj:[["Dispatcher pelanggan","Jam operasional & waktu henti"],["Teknisi servis","Periksa penyebab, catat kerusakan"],["Supervisor servis","Validasi kejadian, cegah catatan ganda"],["Maintenance Planner","Hitung MTBF, rekap"],["Site Manager","Tinjau, tindak lanjut"]],
+ex:"PV351: H = 450 jam, N = 7 → MTBF = 64,29 jam (naik 4,29 jam). D65: 420/7 = 60 jam (tetap). Keduanya tercapai.",
+sk:"S = min(100, MTBF / 60 × 100). Contoh: 48 jam → 80; ≥ 60 jam → 100."},
+{id:"mttr",p:"pin",n:"Waktu Perbaikan (MTTR)",w:7,tg:"MTTR ≤ 10 jam per unit",s0:80,
+def:"Rata-rata waktu perbaikan aktif per kejadian kerusakan, dari diagnosis hingga pengujian selesai dan alat siap. Waktu menunggu dicatat terpisah.",
+tgt:[["Baseline","10 jam"],["Target","Maksimal 10 jam (rata-rata, bukan batas tiap kejadian)"],["Belum selesai","Dicatat sebagai pekerjaan berlangsung, tidak masuk MTTR"],["Periode","Bulanan; dihitung pada bulan perbaikan selesai"]],
+fm:[["MTTR = W / Nr","W = total waktu perbaikan aktif, Nr = jumlah kejadian selesai diperbaiki"]],
+fn:"W dan Nr dari kelompok kejadian yang sama. Tidak ada perbaikan selesai → “tidak ada perbaikan selesai”, bukan nol jam.",
+bt:[["Mulai","Teknisi mulai diagnosis"],["Selesai","Pengujian selesai, supervisor menyatakan alat siap"],["Termasuk","Diagnosis, bongkar, perbaikan/ganti, pasang, uji fungsi"],["Dikecualikan","Menunggu teknisi, suku cadang, akses, pergantian shift, persetujuan"],["Teknisi bersamaan","Pakai durasi kalender, bukan jumlah jam seluruh teknisi"],["Jeda","Durasi sebelum dan sesudah jeda dijumlahkan; jeda dicatat terpisah"]],
+sd:[["Kegiatan perbaikan","Catatan teknisi & work order"],["Status alat","Dispatcher pelanggan"],["Nomor kejadian","Mengikuti catatan MTBF"],["Hasil","Excel MTTR"]],
+pj:[["Teknisi servis","Catat waktu mulai/selesai, jeda, uji"],["Supervisor servis","Validasi & sahkan alat siap"],["Dispatcher pelanggan","Pembanding waktu alat tersedia"],["Maintenance Planner","Hitung MTTR, daftar pekerjaan belum selesai"],["Site Manager","Tindak lanjut perbaikan lama"]],
+ex:"PV351: 7 kejadian, W = 63 jam → MTTR = 9 jam (turun 1 jam). D65: W = 70 jam → 10 jam (tetap). Keduanya tercapai.",
+sk:"S = min(100, 10 / MTTR × 100). Contoh: 8 atau 10 jam → 100; 12,5 jam → 80."},
+{id:"kpm",p:"pin",n:"Kepatuhan Pemeliharaan Terjadwal",w:7,tg:"100% pekerjaan jatuh tempo selesai tepat waktu",s0:75,
+def:"Persentase pekerjaan pemeliharaan terjadwal yang selesai sesuai jadwal dan tervalidasi supervisor servis.",
+tgt:[["Baseline","100%"],["Target","100% per unit"],["Tidak ada pekerjaan jatuh tempo","Dilaporkan sebagai itu, bukan otomatis 100%"],["Periode","Bulanan; dinilai pada bulan jatuh tempo"]],
+fm:[["KPM = Ps / Pj × 100%","Ps = selesai sesuai jadwal, Pj = seluruh pekerjaan jatuh tempo"]],
+fn:"Terlambat, selesai sebagian, atau belum dikerjakan tetap masuk Pj tetapi tidak masuk Ps. Tahunan dihitung dari jumlah pekerjaan.",
+bt:[["Satuan","Satu paket dengan satu nomor pekerjaan = satu pekerjaan"],["Selesai sesuai jadwal","Semua tindakan selesai, hasil tercatat, divalidasi sebelum batas waktu"],["Perubahan jadwal","Disetujui sebelum batas lama; jadwal awal tetap disimpan"],["Dikecualikan","Perbaikan kerusakan mendadak, pemeriksaan tambahan di luar jadwal"]],
+sd:[["Jadwal","Disepakati dengan pelanggan"],["Perubahan","Catatan persetujuan"],["Pelaksanaan","Work order"],["Validasi","Daftar pemeriksaan supervisor"],["Hasil","Excel kepatuhan"]],
+pj:[["Maintenance Planner","Susun daftar, catat perubahan, hitung"],["Teknisi servis","Laksanakan & catat"],["Supervisor servis","Validasi penyelesaian"],["Pelanggan","Setujui jadwal & perubahan"],["Site Manager","Tindak lanjut pekerjaan terlambat"]],
+ex:"PV351: 4 jatuh tempo, 4 tepat waktu → 100%. D65: 3 dari 3 → 100%. Keduanya tercapai.",
+sk:"Skor = persentase kepatuhan (skala 0–100). Contoh: 3 dari 4 → 75."},
+{id:"k3",p:"pin",n:"Keselamatan Kerja",w:8,tg:"Nihil kecelakaan yang mengakibatkan cedera",s0:100,
+def:"Jumlah kejadian kecelakaan kerja yang mengakibatkan cedera, termasuk saat bekerja di Tambang Batu Hijau dan perjalanan langsung mess–lokasi kerja. Cedera yang ditangani P3K ikut dihitung.",
+tgt:[["Baseline","0 kejadian"],["Target","0 kejadian selama Jan–Des 2026, seluruh personel site"],["Ada kejadian","Target belum tercapai (kumulatif tidak kembali nihil)"],["Masih diperiksa","Status sementara"]],
+fm:[["Kcedera = Σ xi (i = 1…n)","xi = 1 bila kejadian dalam cakupan dan mengakibatkan cedera; 0 bila tidak"]],
+fn:"Satu kecelakaan dengan banyak korban = satu kejadian; jumlah korban dicatat sebagai rincian. Periode mengikuti tanggal kecelakaan, bukan tanggal laporan.",
+bt:[["Personel","Seluruh personel Epiroc yang ditugaskan di Site Sumbawa"],["Lokasi","Area kerja tambang, bengkel, gudang, area pendukung"],["Perjalanan","Mess → lokasi kerja dan sebaliknya (langsung)"],["Di luar cakupan","Kegiatan pribadi; diperiksa HSE"],["Tanpa cedera","Dicatat terpisah untuk pencegahan"]],
+sd:[["Laporan kejadian","Formulir insiden HSE"],["Cedera","Catatan P3K / medis"],["Pemeriksaan","Catatan pemeriksaan HSE"],["Hasil","Register kejadian HSE (Excel)"]],
+pj:[["Personel/saksi","Laporkan kejadian"],["Atasan langsung","Lengkapi kronologi"],["HSE","Catat, validasi, hitung, rekap"],["Supervisor servis","Validasi alat & tahapan kerja"],["Site Manager","Tinjau & pantau tindak lanjut"]],
+ex:"K-01 (alat jatuh, tanpa cedera) = 0; K-02 (tersandung, tanpa cedera) = 0; K-03 (cedera di gym setelah pulang, di luar cakupan) = 0. Total K = 0 → target tercapai.",
+sk:"Skor 100 bila K = 0; skor 0 bila K ≥ 1. Status ketidaktercapaian K3 tetap dilaporkan terpisah walau skor gabungan tinggi."},
+{id:"lat",p:"pp",n:"Pemenuhan Pelatihan Personel",w:15,tg:"100% peserta wajib ≥ 40 jam/tahun",s0:75,
+def:"Persentase teknisi servis, supervisor, dan HSE yang menyelesaikan minimal 40 jam pelatihan dalam satu tahun kalender. Dinilai per orang, bukan rata-rata jam.",
+tgt:[["Baseline","100%"],["Target","100% peserta wajib ≥ 40 jam"],["Pemantauan","Triwulan (Mar, Jun, Sep, Des); penilaian akhir tahun"],["Pelatihan","Teknisi: Epiroc · Supervisor: Phitagoras · HSE: Phitagoras (HIRADC) & Pinasthika (investigasi insiden)"]],
+fm:[["Ji = Σ hik (k = 1…mi)","Total jam pelatihan peserta ke-i"],["Kpelatihan = N40 / Nw × 100%","N40 = peserta ≥ 40 jam, Nw = seluruh peserta wajib"]],
+fn:"Kelebihan jam seorang peserta tidak menutup kekurangan peserta lain. Bukti penyelesaian dan durasi harus terverifikasi. Daftar wajib kosong → “tidak ada peserta wajib”.",
+bt:[["Peserta","Teknisi servis, supervisor, HSE dalam daftar wajib"],["Durasi dihitung","Pembelajaran teori & praktik yang diikuti dan diselesaikan"],["Konversi JP","JP × menit per JP ÷ 60 (mis. 40 JP × 45 mnt = 30 jam)"],["Dikecualikan","Perjalanan, istirahat, menunggu, asesmen sertifikasi tanpa pembelajaran, rapat, pengarahan harian"],["Sertifikat","Sertifikat pelatihan ≠ sertifikat kompetensi; dicatat terpisah"]],
+sd:[["Peserta","Daftar peserta wajib"],["Program","Jadwal & rincian penyelenggara"],["Kehadiran","Daftar hadir"],["Penyelesaian","Sertifikat/surat penyelesaian"],["Hasil","Excel pelatihan"]],
+pj:[["Peserta","Serahkan bukti"],["Admin","Periksa dokumen, konversi JP, rekap, hitung"],["Supervisor servis / HSE","Validasi materi pelatihan masing-masing"],["Site Manager","Validasi pelatihan supervisor & HSE, setujui daftar, tindak lanjut"]],
+ex:"4 peserta wajib: teknisi 40 & 48 jam, supervisor 40 jam, HSE 40 jam → N40 = 4 → 4/4 = 100%. Bila satu peserta hanya 32 jam → 3/4 = 75%.",
+sk:"Skor = persentase pemenuhan. Contoh: 3 dari 4 → 75 → kontribusi 11,25 poin; semua memenuhi → 15 poin."}
+];
+var TB=[["sum","Ringkasan & Target"],["fm","Formula"],["bt","Batas Pengukuran"],["sd","Sumber Data & PJ"],["ex","Contoh & Penskoran"]];
+var cur=null,tab="sum";
+function tbl(r,h){return '<div class="tb"><table>'+(h?'<tr><th>'+h[0]+'</th><th>'+h[1]+'</th></tr>':'')+r.map(function(x){return '<tr><td>'+x[0]+'</td><td>'+x[1]+'</td></tr>'}).join('')+'</table></div>'}
+function el(i){return document.getElementById(i)}
+// bar
+el("bar").innerHTML=K.map(function(k){return '<div style="flex:'+k.w+';background:'+P[k.p].c+'" title="'+k.n+' '+k.w+'%">'+k.w+'%</div>'}).join('');
+// cards
+var h="";["keu","pel","pin","pp"].forEach(function(p){
+h+='<div class="persp"><i style="background:'+P[p].c+'"></i>'+P[p].n+' <span>bobot '+P[p].w+'%</span></div><div class="grid">';
+K.filter(function(k){return k.p===p}).forEach(function(k){h+='<button class="k" id="c_'+k.id+'" style="--p:'+P[p].c+'" onclick="openK(\''+k.id+'\')"><span class="bw">'+k.w+'%</span><b>'+k.n+'</b><div class="t">'+k.tg+'</div></button>'});
+h+='</div>'});
+el("cards").innerHTML=h;
+function openK(id){cur=K.filter(function(k){return k.id===id})[0];tab="sum";K.forEach(function(k){el("c_"+k.id).classList.toggle("on",k.id===id)});render();el("det").hidden=false;el("det").scrollIntoView({behavior:"smooth",block:"start"})}
+function setTab(t){tab=t;render()}
+function render(){var k=cur,b="";
+if(tab==="sum")b='<p>'+k.def+'</p>'+tbl(k.tgt,["Komponen","Ketentuan"]);
+if(tab==="fm")b=k.fm.map(function(f){return '<div class="f">'+f[0]+'</div><div class="note">'+f[1]+'</div>'}).join('')+'<p class="note">'+k.fn+'</p>';
+if(tab==="bt")b=tbl(k.bt,["Komponen","Ketentuan pengukuran"]);
+if(tab==="sd")b='<b>Sumber data</b>'+tbl(k.sd,["Data","Dokumen sumber"])+'<br><b>Penanggung jawab</b>'+tbl(k.pj,["Jabatan/pihak","Tanggung jawab"]);
+if(tab==="ex")b='<b>Contoh perhitungan (simulasi)</b><p>'+k.ex+'</p><b>Aturan penskoran</b><div class="f">'+k.sk+'</div><p class="note">Kontribusi ke skor gabungan = bobot '+k.w+'% × skor (maks. '+k.w+' poin).</p>';
+el("det").innerHTML='<span class="pill" style="background:'+P[k.p].c+';color:#fff">'+P[k.p].n+' · bobot '+k.w+'%</span><h3>'+k.n+'</h3><div class="tabs">'+TB.map(function(t){return '<button class="'+(t[0]===tab?'on':'')+'" onclick="setTab(\''+t[0]+'\')">'+t[1]+'</button>'}).join('')+'</div>'+b}
+// calculator
+var rows="";K.forEach(function(k,i){rows+='<div class="row"><span>'+k.n+'</span><input type="range" min="0" max="100" step="1" value="'+k.s0+'" id="s'+i+'" oninput="calc()"><span id="v'+i+'">'+k.s0+'</span><span id="p'+i+'" class="sub"></span></div>'});
+el("rows").innerHTML=rows;
+function calc(){var t=0;K.forEach(function(k,i){var s=+el("s"+i).value,c=k.w*s/100;t+=c;el("v"+i).textContent=s;el("p"+i).textContent=c.toFixed(2).replace(".",",")+" / "+k.w});
+el("tot").textContent=t.toFixed(2).replace(".",",");
+el("sw").textContent=(+el("s5").value===0)?"Peringatan: target keselamatan tidak tercapai dan tetap dilaporkan terpisah walau skor gabungan tinggi.":""}
+calc();
+</script>
+</body>
+</html>
